@@ -1,0 +1,7 @@
+<h3>Topics</h3>
+
+<ul>
+  <%= Enum.map @topics, fn topic -> %>
+    <li><%= topic.title %></li>
+  <% end %>
+</ul>

@@ -2,8 +2,9 @@ defmodule Discuss.TopicControllerTest do
   use DiscussWeb.ConnCase
 
   import Discuss.BlogFixtures
+  import Ecto.Query, only: [where: 3]
 
-  @create_attrs %{title: "some title"}
+  @create_attrs %{title: "This is a topic title"}
   @update_attrs %{title: "some other title"}
   @invalid_attrs %{title: nil}
 
@@ -39,7 +40,7 @@ defmodule Discuss.TopicControllerTest do
     test "does not create a new topic and renders the new form, when failure", %{conn: conn} do
       conn = post(conn, Routes.topic_path(conn, :create), %{"topic" => @invalid_attrs})
 
-      assert html_response(conn, 200) =~ "Create a new Topic"
+      assert html_response(conn, 422) =~ "Create a new Topic"
     end
 
     test "creates the Topic and redirects to root_path when success", %{conn: conn} do
@@ -49,7 +50,7 @@ defmodule Discuss.TopicControllerTest do
 
       conn = get(conn, Routes.topic_path(conn, :index))
 
-      assert conn.resp_body =~ "some title"
+      assert html_response(conn, 200) =~ @create_attrs.title
     end
   end
 
@@ -80,7 +81,7 @@ defmodule Discuss.TopicControllerTest do
             Routes.topic_path(conn, :update, topic.id),
             %{"topic" => @invalid_attrs}
 
-      assert html_response(conn, 200) =~ "Edit Topic"
+      assert html_response(conn, 422) =~ "Edit Topic"
     end
   end
 
@@ -93,7 +94,9 @@ defmodule Discuss.TopicControllerTest do
 
       conn = get(conn, Routes.topic_path(conn, :index))
 
-      refute conn.resp_body =~ "some title"
+      assert conn.private.phoenix_flash["info"] == "Topic was successfully deleted"
+
+      assert where(Discuss.Blog.Topic, [t], t.id == ^topic.id) |> Discuss.Repo.all() == []
     end
   end
 end

@@ -18,7 +18,7 @@ defmodule Discuss.Blog do
 
   """
   def list_topics do
-    Repo.all(Topic)
+    order_by(Topic, asc: :title) |> Repo.all()
   end
 
   @doc """

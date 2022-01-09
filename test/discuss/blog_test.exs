@@ -11,10 +11,11 @@ defmodule Discuss.BlogTest do
     @invalid_attrs %{title: nil}
     @valid_attrs %{title: "Some title"}
 
-    test "list_topics/0 returns all topics" do
-      topic = topic_fixture(@valid_attrs)
+    test "list_topics/0 returns all topics ordered by title" do
+      first_topic = topic_fixture(%{title: "A new topic"})
+      second_topic = topic_fixture(%{title: "Second topic"})
 
-      assert Blog.list_topics() == [topic]
+      assert Blog.list_topics() == [first_topic, second_topic]
     end
 
     test "get_topic!/1 returns the topic with given id" do

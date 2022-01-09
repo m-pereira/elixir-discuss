@@ -29,10 +29,42 @@ defmodule DiscussWeb.TopicController do
       {:ok, _topic} ->
         conn
         |> put_flash(:info, "Topic created")
-        |> redirect(to: Routes.topic_path(conn, :index), notice: "Topic created")
+        |> redirect(to: Routes.topic_path(conn, :index))
 
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
+  end
+
+  def edit(conn, %{"id" => id}) do
+    topic = Blog.get_topic!(id)
+
+    changeset = Topic.changeset(topic)
+
+    render(conn, "edit.html", changeset: changeset, id: id)
+  end
+
+  def update(conn, %{"id" => id, "topic" => topic_params}) do
+    topic = Blog.get_topic!(id)
+
+    case Blog.update_topic(topic, topic_params) do
+      {:ok, _topic} ->
+        conn
+        |> put_flash(:info, "Topic updated")
+        |> redirect(to: Routes.topic_path(conn, :index))
+
+      {:error, changeset} ->
+        render(conn, "edit.html", changeset: changeset, id: id)
+    end
+  end
+
+  def delete(conn, %{"id" => id}) do
+    topic = Blog.get_topic!(id)
+
+    Blog.delete_topic(topic)
+
+    conn
+    |> put_flash(:info, "Topic deleted")
+    |> redirect(to: Routes.topic_path(conn, :index))
   end
 end

@@ -39,6 +39,9 @@
   display: block;
   margin: -1rem 0 2rem;
 }
+.list-links {
+  color: black;
+}
 
 /* LiveView specific classes for your customization */
 .phx-no-feedback.invalid-feedback,

@@ -2,9 +2,9 @@ import Config
 
 # Configure your database
 config :discuss, Discuss.Repo,
-  username: System.get_env("PG_USERNAME") || "postgres",
-  password: System.get_env("PG_PASSWORD") || "postgres",
-  hostname: System.get_env("PG_HOST") || "localhost",
+  host: System.get_env("PG_HOST"),
+  username: System.get_env("PG_USERNAME"),
+  password: System.get_env("PG_PASSWORD"),
   database: "discuss_dev",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

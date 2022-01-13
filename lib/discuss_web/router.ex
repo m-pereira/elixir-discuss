@@ -2,24 +2,31 @@ defmodule DiscussWeb.Router do
   use DiscussWeb, :router
 
   pipeline :browser do
-    plug(:accepts, ["html"])
-    plug(:fetch_session)
-    plug(:fetch_live_flash)
-    plug(:put_root_layout, {DiscussWeb.LayoutView, :root})
-    plug(:protect_from_forgery)
-    plug(:put_secure_browser_headers)
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, {DiscussWeb.LayoutView, :root}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
   end
 
   pipeline :api do
-    plug(:accepts, ["json"])
+    plug :accepts, ["json"]
   end
 
   scope "/", DiscussWeb do
-    pipe_through(:browser)
+    pipe_through :browser
 
-    get("/", TopicController, :index)
+    get "/", TopicController, :index
 
-    resources("/topics", TopicController, except: [:index])
+    resources "/topics", TopicController, except: [:index]
+  end
+
+  scope "/auth", Discuss do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
   end
 
   # Other scopes may use custom stacks.
@@ -38,9 +45,9 @@ defmodule DiscussWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through(:browser)
+      pipe_through :browser
 
-      live_dashboard("/dashboard", metrics: DiscussWeb.Telemetry)
+      live_dashboard "/dashboard", metrics: DiscussWeb.Telemetry
     end
   end
 
@@ -50,9 +57,9 @@ defmodule DiscussWeb.Router do
   # node running the Phoenix server.
   if Mix.env() == :dev do
     scope "/dev" do
-      pipe_through(:browser)
+      pipe_through :browser
 
-      forward("/mailbox", Plug.Swoosh.MailboxPreview)
+      forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
 end

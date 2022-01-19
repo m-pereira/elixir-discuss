@@ -117,7 +117,7 @@ defmodule Discuss.Auth do
     User.changeset(user, attrs)
   end
 
-  @spec upsert(map) :: {:ok, Auth.User.t()} | {:error, Ecto.Changeset.t()}
+  @spec upsert(map) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   @doc """
   Check if a user is already into the database with given email. If yes, update token and provider.
   If not, create a new user.

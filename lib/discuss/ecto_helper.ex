@@ -19,7 +19,7 @@ defmodule Discuss.EctoHelper do
   # => ["Login should be at most 10 character(s)"]
   ```
   """
-  @spec pretty_errors(Map.t()) :: [String.t()]
+  @spec pretty_errors(map) :: [String.t()]
   def pretty_errors(errors) do
     errors
     |> Enum.map(&do_prettify/1)

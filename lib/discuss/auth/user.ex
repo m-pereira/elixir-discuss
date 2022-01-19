@@ -17,6 +17,7 @@ defmodule Discuss.Auth.User do
     user
     |> cast(attrs, @required_fields)
     |> validate_required(@required_fields)
+    |> validate_inclusion(:provider, [:github])
     |> unique_constraint(:email)
   end
 end

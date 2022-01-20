@@ -1,10 +1,11 @@
 defmodule Discuss.AuthTest do
-  use Discuss.DataCase
+  use Discuss.DataCase, async: true
 
   alias Discuss.Auth
 
   describe "users" do
     alias Discuss.Auth.User
+    alias Discuss.Auth
 
     import Discuss.AuthFixtures
 
@@ -19,6 +20,16 @@ defmodule Discuss.AuthTest do
     test "get_user!/1 returns the user with given id" do
       user = user_fixture()
       assert Auth.get_user!(user.id) == user
+    end
+
+    test "get_user_by/1 return the user if it exists" do
+      user = user_fixture()
+
+      assert Auth.get_user_by(email: user.email) == user
+    end
+
+    test "get_user_by/1 returns nil if user does not exist" do
+      assert Auth.get_user_by(email: "") == nil
     end
 
     test "create_user/1 with valid data creates a user" do
@@ -75,6 +86,25 @@ defmodule Discuss.AuthTest do
     test "change_user/1 returns a user changeset" do
       user = user_fixture()
       assert %Ecto.Changeset{} = Auth.change_user(user)
+    end
+
+    test "upsert/1 when successfully with valid attributes, updating user" do
+      user = user_fixture(%{token: "old_token"})
+      result = Auth.upsert(%{email: user.email, provider: "github", token: "123456-new_token"})
+
+      assert {:ok, %User{provider: :github, token: "123456-new_token"}} = result
+    end
+
+    test "upsert/1 when successfully with valid params, creating new user" do
+      result = Auth.upsert(%{email: "john@email.com", provider: "github", token: "0"})
+
+      assert {:ok, %User{provider: :github, email: "john@email.com", token: "0"}} = result
+    end
+
+    test "upsert/1 when failed with invalid attributes" do
+      result = Auth.upsert(%{email: "", provider: "invalid", token: "0"})
+
+      assert {:error, %Ecto.Changeset{}} = result
     end
   end
 end

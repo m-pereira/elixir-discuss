@@ -37,6 +37,7 @@ defmodule Discuss.Auth do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  @spec get_user_by(keyword()) :: User.t() | nil
   @doc """
   Finds a user by the given attribute.
 
@@ -45,8 +46,11 @@ defmodule Discuss.Auth do
       iex> get_user_by(email: "some_user@email.com")
       %User{}
 
+      iex> get_user_by(email: "other@email.com")
+      nil
+
   """
-  def get_user_by([{attr, value}]) when is_atom(attr), do: Repo.get_by(User, attr, value)
+  def get_user_by(clauses), do: Repo.get_by(User, clauses)
 
   @doc """
   Creates a user.
@@ -111,5 +115,25 @@ defmodule Discuss.Auth do
   """
   def change_user(%User{} = user, attrs \\ %{}) do
     User.changeset(user, attrs)
+  end
+
+  @spec upsert(map) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  @doc """
+  Check if a user is already into the database with given email. If yes, update token and provider.
+  If not, create a new user.
+
+  ## Examples
+
+      iex> perform(%{email: "john@email.com", provider: "github", token: "123456789"})
+      {:ok, %Auth.User{}}
+
+      iex> perform(%{email: "john@email.com", provider: "invalid", token: nil})
+      {:error, %Auth.User.changeset{}}
+  """
+  def upsert(params) do
+    case get_user_by(email: params.email) do
+      nil -> create_user(params)
+      user -> update_user(user, params)
+    end
   end
 end

@@ -2,6 +2,12 @@ defmodule Discuss.Auth.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @type t :: %__MODULE__{
+          email: String.t(),
+          provider: String.t(),
+          token: String.t()
+        }
+
   @required_fields [:email, :provider, :token]
 
   schema "users" do
@@ -17,6 +23,7 @@ defmodule Discuss.Auth.User do
     user
     |> cast(attrs, @required_fields)
     |> validate_required(@required_fields)
+    |> validate_inclusion(:provider, [:github])
     |> unique_constraint(:email)
   end
 end

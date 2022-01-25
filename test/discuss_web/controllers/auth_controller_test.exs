@@ -1,7 +1,7 @@
-defmodule Discuss.AuthControllerTest do
+defmodule DiscussWeb.AuthControllerTest do
   use DiscussWeb.ConnCase, async: true
 
-  alias Discuss.AuthController
+  alias DiscussWeb.AuthController
   alias Discuss.AuthFixtures
 
   describe "GET /:provider/callback" do

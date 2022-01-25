@@ -1,4 +1,4 @@
-defmodule Discuss.TopicControllerTest do
+defmodule DiscussWeb.TopicControllerTest do
   use DiscussWeb.ConnCase
 
   import Discuss.BlogFixtures

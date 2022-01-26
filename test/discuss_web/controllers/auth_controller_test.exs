@@ -2,11 +2,11 @@ defmodule DiscussWeb.AuthControllerTest do
   use DiscussWeb.ConnCase, async: true
 
   alias DiscussWeb.AuthController
-  alias Discuss.Factory
+  alias Discuss.AuthFactory
 
   describe "GET /:provider/callback" do
     test "create or update the user, signs user in, and redirect to topics index", %{conn: conn} do
-      user = Factory.insert(:user, %{email: "john.doe@example.com"})
+      user = AuthFactory.insert(:user, %{email: "john.doe@example.com"})
 
       auth = %Ueberauth.Auth{
         provider: :github,
@@ -48,7 +48,7 @@ defmodule DiscussWeb.AuthControllerTest do
 
   describe "GET /logout" do
     test "destroy the session and redirect to topics path", %{conn: conn} do
-      user = Factory.insert(:user)
+      user = AuthFactory.insert(:user)
 
       auth = %Ueberauth.Auth{
         provider: :github,

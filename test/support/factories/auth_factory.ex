@@ -1,4 +1,4 @@
-defmodule Discuss.Factory do
+defmodule Discuss.AuthFactory do
   use ExMachina.Ecto, repo: Discuss.Repo
 
   def user_factory do

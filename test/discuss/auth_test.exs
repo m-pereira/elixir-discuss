@@ -1,8 +1,7 @@
 defmodule Discuss.AuthTest do
   use Discuss.DataCase, async: true
 
-  import Discuss.Factory
-
+  alias Discuss.AuthFactory
   alias Discuss.Auth
 
   describe "users" do
@@ -13,18 +12,18 @@ defmodule Discuss.AuthTest do
     @invalid_attrs %{email: nil, provider: nil, token: nil}
 
     test "list_users/0 returns all users" do
-      user = insert(:user)
+      user = AuthFactory.insert(:user)
 
       assert Auth.list_users() == [user]
     end
 
     test "get_user!/1 returns the user with given id" do
-      user = insert(:user)
+      user = AuthFactory.insert(:user)
       assert Auth.get_user!(user.id) == user
     end
 
     test "get_user_by/1 return the user if it exists" do
-      user = insert(:user)
+      user = AuthFactory.insert(:user)
 
       assert Auth.get_user_by(email: user.email) == user
     end
@@ -59,7 +58,7 @@ defmodule Discuss.AuthTest do
     end
 
     test "update_user/2 with valid data updates the user" do
-      user = insert(:user)
+      user = AuthFactory.insert(:user)
 
       update_attrs = %{
         email: "some updated email",
@@ -73,24 +72,24 @@ defmodule Discuss.AuthTest do
     end
 
     test "update_user/2 with invalid data returns error changeset" do
-      user = insert(:user)
+      user = AuthFactory.insert(:user)
       assert {:error, %Ecto.Changeset{}} = Auth.update_user(user, @invalid_attrs)
       assert user == Auth.get_user!(user.id)
     end
 
     test "delete_user/1 deletes the user" do
-      user = insert(:user)
+      user = AuthFactory.insert(:user)
       assert {:ok, %User{}} = Auth.delete_user(user)
       assert_raise Ecto.NoResultsError, fn -> Auth.get_user!(user.id) end
     end
 
     test "change_user/1 returns a user changeset" do
-      user = insert(:user)
+      user = AuthFactory.insert(:user)
       assert %Ecto.Changeset{} = Auth.change_user(user)
     end
 
     test "upsert/1 when successfully with valid attributes, updating user" do
-      user = insert(:user, %{token: "old_token"})
+      user = AuthFactory.insert(:user, %{token: "old_token"})
       result = Auth.upsert(%{email: user.email, provider: "github", token: "123456-new_token"})
 
       assert {:ok, %User{provider: :github, token: "123456-new_token"}} = result

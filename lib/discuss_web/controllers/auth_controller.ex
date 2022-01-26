@@ -1,4 +1,4 @@
-defmodule Discuss.AuthController do
+defmodule DiscussWeb.AuthController do
   use DiscussWeb, :controller
 
   alias Discuss.EctoHelper
@@ -25,5 +25,11 @@ defmodule Discuss.AuthController do
         |> put_flash(:error, EctoHelper.pretty_errors(changeset.errors))
         |> redirect(to: Routes.topic_path(conn, :index))
     end
+  end
+
+  def logout(conn, _params) do
+    conn
+    |> configure_session(drop: true)
+    |> redirect(to: Routes.topic_path(conn, :index))
   end
 end

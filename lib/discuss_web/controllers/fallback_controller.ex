@@ -1,4 +1,4 @@
-defmodule Discuss.FallbackController do
+defmodule DiscussWeb.FallbackController do
   use Phoenix.Controller
 
   def call(conn, {:error, :not_found}) do

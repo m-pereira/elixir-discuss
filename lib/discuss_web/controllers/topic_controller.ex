@@ -4,7 +4,7 @@ defmodule DiscussWeb.TopicController do
   alias Discuss.Blog.Topic
   alias Discuss.Blog
 
-  action_fallback Discuss.FallbackController
+  action_fallback DiscussWeb.FallbackController
 
   def index(conn, _params) do
     topics = Blog.list_topics()

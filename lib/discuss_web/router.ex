@@ -8,6 +8,7 @@ defmodule DiscussWeb.Router do
     plug :put_root_layout, {DiscussWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Discuss.Plugs.CurrentUser
   end
 
   pipeline :api do
@@ -22,9 +23,10 @@ defmodule DiscussWeb.Router do
     resources "/topics", TopicController, except: [:index]
   end
 
-  scope "/auth", Discuss do
+  scope "/auth", DiscussWeb do
     pipe_through :browser
 
+    get "/logout", AuthController, :logout
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
   end

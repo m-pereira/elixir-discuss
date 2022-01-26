@@ -23,7 +23,9 @@
           </a>
           <ul class="right">
             <%= if @conn.assigns[:user] do %>
-              <li>Logout</li>
+              <li>
+                <%= link "Logout", to: Routes.auth_path(@conn, :logout) %>
+              </li>
             <% else %>
               <li>
                 <%= link "Sign in with Github", to: Routes.auth_path(@conn, :request, "github") %>

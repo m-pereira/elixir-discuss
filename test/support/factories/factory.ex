@@ -1,5 +1,12 @@
-defmodule Discuss.AuthFactory do
+defmodule Discuss.Factory do
   use ExMachina.Ecto, repo: Discuss.Repo
+
+  def topic_factory do
+    %Discuss.Blog.Topic{
+      title: sequence(:title, &"This is a topic number: #{&1}"),
+      user: build(:user)
+    }
+  end
 
   def user_factory do
     %Discuss.Auth.User{

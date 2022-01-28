@@ -2,16 +2,14 @@ defmodule DiscussWeb.TopicControllerTest do
   use DiscussWeb.ConnCase
 
   import Ecto.Query, only: [where: 3]
-
-  alias Discuss.BlogFactory
-  alias Discuss.AuthFactory
+  import Discuss.Factory
 
   @create_attrs %{title: "This is a topic title"}
   @update_attrs %{title: "some other title"}
   @invalid_attrs %{title: nil}
 
   setup %{conn: conn} do
-    user = AuthFactory.insert(:user)
+    user = insert(:user)
 
     conn = conn |> init_test_session(user_id: user.id)
 
@@ -38,7 +36,7 @@ defmodule DiscussWeb.TopicControllerTest do
 
   describe "GET /edit" do
     test "returns http status 200, and renders the edit template", %{conn: conn} do
-      topic = BlogFactory.insert(:topic, @create_attrs)
+      topic = insert(:topic, @create_attrs)
       conn = get(conn, Routes.topic_path(conn, :edit, topic.id))
 
       assert conn.status == 200
@@ -66,7 +64,7 @@ defmodule DiscussWeb.TopicControllerTest do
 
   describe "PUT /update" do
     setup do
-      topic = BlogFactory.insert(:topic, @create_attrs)
+      topic = insert(:topic, @create_attrs)
 
       {:ok, topic: topic}
     end
@@ -97,7 +95,7 @@ defmodule DiscussWeb.TopicControllerTest do
 
   describe "DELETE /delete" do
     test "deletes the topic and redirects to index page", %{conn: conn} do
-      topic = BlogFactory.insert(:topic, @create_attrs)
+      topic = insert(:topic, @create_attrs)
       conn = delete(conn, Routes.topic_path(conn, :delete, topic.id))
 
       assert redirected_to(conn) == Routes.topic_path(conn, :index)

@@ -1,10 +1,10 @@
 defmodule DiscussWeb.AuthControllerTest do
   use DiscussWeb.ConnCase, async: true
 
-  alias Discuss.AuthFactory
+  import Discuss.Factory
 
   setup %{conn: conn} do
-    user = AuthFactory.insert(:user, %{email: "john.doe@example.com"})
+    user = insert(:user, %{email: "john.doe@example.com"})
 
     auth = %Ueberauth.Auth{
       provider: :github,

@@ -1,4 +1,4 @@
-defmodule Discuss.Plugs.CurrentUser do
+defmodule DiscussWeb.Plugs.CurrentUser do
   import Plug.Conn
 
   alias Discuss.Auth

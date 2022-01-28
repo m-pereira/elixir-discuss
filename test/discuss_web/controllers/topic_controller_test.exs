@@ -4,10 +4,19 @@ defmodule DiscussWeb.TopicControllerTest do
   import Ecto.Query, only: [where: 3]
 
   alias Discuss.BlogFactory
+  alias Discuss.AuthFactory
 
   @create_attrs %{title: "This is a topic title"}
   @update_attrs %{title: "some other title"}
   @invalid_attrs %{title: nil}
+
+  setup %{conn: conn} do
+    user = AuthFactory.insert(:user)
+
+    conn = conn |> init_test_session(user_id: user.id)
+
+    {:ok, conn: conn, user: user}
+  end
 
   describe "GET /" do
     test "returns http status 200, and renders the index template", %{conn: conn} do

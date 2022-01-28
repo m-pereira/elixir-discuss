@@ -1,7 +1,7 @@
 defmodule DiscussWeb.AuthControllerTest do
   use DiscussWeb.ConnCase, async: true
 
-  import Discuss.Factory
+  import Discuss.Factories
 
   setup %{conn: conn} do
     user = insert(:user, %{email: "john.doe@example.com"})

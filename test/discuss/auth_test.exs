@@ -1,7 +1,7 @@
 defmodule Discuss.AuthTest do
   use Discuss.DataCase, async: true
 
-  import Discuss.Factory
+  import Discuss.Factories
 
   alias Discuss.Auth
 

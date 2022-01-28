@@ -1,7 +1,7 @@
 defmodule Discuss.BlogTest do
   use Discuss.DataCase, async: true
 
-  import Discuss.Factory
+  import Discuss.Factories
 
   alias Discuss.{Blog, Repo}
 
@@ -19,9 +19,9 @@ defmodule Discuss.BlogTest do
     end
 
     test "get_topic!/1 returns the topic with given id" do
-      topic = insert(:topic, @valid_attrs)
+      %Topic{id: topic_id} = insert(:topic, @valid_attrs)
 
-      assert Blog.get_topic!(topic.id) |> Repo.preload(:user) == topic
+      assert %Topic{id: ^topic_id} = Blog.get_topic!(topic_id)
     end
 
     test "create_topic/1 with valid data creates a topic" do

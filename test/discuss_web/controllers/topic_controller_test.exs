@@ -2,7 +2,7 @@ defmodule DiscussWeb.TopicControllerTest do
   use DiscussWeb.ConnCase
 
   import Ecto.Query, only: [where: 3]
-  import Discuss.Factory
+  import Discuss.Factories
 
   @create_attrs %{title: "This is a topic title"}
   @update_attrs %{title: "some other title"}

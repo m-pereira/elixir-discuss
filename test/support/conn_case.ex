@@ -23,6 +23,7 @@ defmodule DiscussWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import DiscussWeb.ConnCase
+      import Discuss.Factories
 
       alias DiscussWeb.Router.Helpers, as: Routes
 

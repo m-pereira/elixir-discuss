@@ -15,6 +15,8 @@ defmodule Discuss.Auth.User do
     field :provider, Ecto.Enum, values: [:github]
     field :token, :string
 
+    has_many :topics, Discuss.Blog.Topic
+
     timestamps()
   end
 

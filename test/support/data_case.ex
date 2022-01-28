@@ -24,6 +24,7 @@ defmodule Discuss.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Discuss.DataCase
+      import Discuss.Factories
     end
   end
 

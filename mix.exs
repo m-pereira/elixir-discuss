@@ -11,7 +11,7 @@ defmodule Discuss.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       version: "0.1.0",
-      plt_core_path: "_build/#{Mix.env()}/plt"
+      plt_core_path: "_build/#{Mix.env()}"
     ]
   end
 

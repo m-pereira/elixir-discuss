@@ -45,15 +45,11 @@ jobs:
           path: |
             priv/plts
 
-      # Create PLTs if no cache was found
-      - name: Create PLTs
-        if: steps.plt_cache.outputs.cache-hit != 'true'
-        run: mix dialyzer --plt
-
       - name: Install dependencies
         run: |
           mix deps.get
           mix deps.compile
+          mix dialyzer --plt
 
       - name: Run dialyzer
         run: mix dialyzer

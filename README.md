@@ -1,6 +1,6 @@
 # Discuss
 
-![test workflow](https://github.com/m-pereira/elixir-discuss/actions/workflows/elixir.yml/badge.svg)
+![test workflow](https://github.com/m-pereira/elixir-discuss/actions/workflows/tests.yml/badge.svg)
 ![dialyzer workflow](https://github.com/m-pereira/elixir-discuss/actions/workflows/dialyzer.yml/badge.svg)
 
 To start your Phoenix server:

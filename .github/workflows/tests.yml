@@ -1,10 +1,13 @@
-name: Elixir Dialyzer
+name: Elixir tests
 
 on:
   push:
     branches: [master]
   pull_request:
     branches: [master]
+
+env:
+  MIX_ENV: test
 
 jobs:
   tests:
@@ -44,9 +47,17 @@ jobs:
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-
 
+      - name: Restore build cache
+        uses: actions/cache@v2
+        with:
+          path: _build
+          key: ${{ runner.os }}-build-${{ hashFiles('mix.lock') }}
+          restore-keys: ${{ runner.os }}-build
+
       - name: Install dependencies
         run: |
           mix deps.get
+          mix deps.compile
           mix ecto.create && mix ecto.migrate
 
       - name: Run tests

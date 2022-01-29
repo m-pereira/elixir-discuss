@@ -3,7 +3,7 @@ defmodule Discuss.BlogTest do
 
   import Discuss.Factories
 
-  alias Discuss.{Blog, Repo}
+  alias Discuss.Blog
 
   describe "topics" do
     alias Discuss.Blog.Topic

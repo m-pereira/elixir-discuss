@@ -3,14 +3,15 @@ defmodule Discuss.MixProject do
 
   def project do
     [
+      aliases: aliases(),
       app: :discuss,
-      version: "0.1.0",
+      compilers: [:gettext] ++ Mix.compilers(),
+      deps: deps(),
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:gettext] ++ Mix.compilers(),
+      plt_core_path: "_build/#{Mix.env()}",
       start_permanent: Mix.env() == :prod,
-      aliases: aliases(),
-      deps: deps()
+      version: "0.1.0"
     ]
   end
 

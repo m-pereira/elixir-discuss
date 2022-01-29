@@ -43,7 +43,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-plt
           path: |
-            _build/plt/${{ steps.beam.outputs.elixir-version }}/${{ steps.beam.outputs.otp-version }}
+            _build/dev
 
       - name: Install dependencies
         run: |

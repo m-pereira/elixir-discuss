@@ -1,4 +1,4 @@
-name: Elixir Dialyzer
+name: Elixir Test
 
 on:
   push:

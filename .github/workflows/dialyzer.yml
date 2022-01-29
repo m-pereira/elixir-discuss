@@ -37,7 +37,9 @@ jobs:
         id: plt_cache
         with:
           key: ${{ runner.os }}-plt-${{ hashFiles('mix.lock') }}
-          path: _build/dev/plt
+          restore-keys: ${{ runner.os }}-plt
+          path: |
+            _build/dev/plt
 
       - name: Install dependencies
         run: |

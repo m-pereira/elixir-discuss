@@ -13,11 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Elixir
-        id: beam
-        uses: erlef/setup-beam@v1
+        uses: erlef/setup-beam@988e02bfe678367a02564f65ca2e37726dc0268f
         with:
-          elixir-version: "1.12.3" # Define the elixir version
-          otp-version: "24.1" # Define the OTP version
+          elixir-version: "1.12.3" # Define the elixir version [required]
+          otp-version: "24.1" # Define the OTP version [required]
 
       - name: Restore dependencies cache
         uses: actions/cache@v2
@@ -26,27 +25,18 @@ jobs:
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-
 
-      # Don't cache PLTs based on mix.lock hash, as Dialyzer can incrementally update even old ones
-      # Cache key based on Elixir & Erlang version (also useful when running in matrix)
-      - name: Restore PLT cache
+      - name: Restore build cache
         uses: actions/cache@v2
-        id: plt_cache
         with:
-          key: |
-            ${{ runner.os }}-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-plt
-          restore-keys: |
-            ${{ runner.os }}-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-plt
-          path: |
-            priv/plts
-
-      # Create PLTs if no cache was found
-      - name: Create PLTs
-        if: steps.plt_cache.outputs.cache-hit != 'true'
-        run: mix dialyzer --plt
+          path: _build
+          key: ${{ runner.os }}-build-${{ hashFiles('mix.lock') }}
+          restore-keys: ${{ runner.os }}-build
 
       - name: Install dependencies
         run: |
           mix deps.get
+          mix deps.compile
+          mix dialyzer --plt
 
       - name: Run dialyzer
         run: mix dialyzer

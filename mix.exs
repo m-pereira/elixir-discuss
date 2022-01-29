@@ -9,7 +9,6 @@ defmodule Discuss.MixProject do
       deps: deps(),
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
-      plt_core_path: "_build/#{Mix.env()}",
       start_permanent: Mix.env() == :prod,
       version: "0.1.0"
     ]

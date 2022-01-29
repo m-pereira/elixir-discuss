@@ -1,4 +1,4 @@
-name: Elixir Test
+name: Elixir
 
 on:
   push:

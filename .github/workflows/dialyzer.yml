@@ -18,6 +18,12 @@ jobs:
           elixir-version: "1.12.3" # Define the elixir version [required]
           otp-version: "24.1" # Define the OTP version [required]
 
+      - uses: actions/cache@v2
+      - name: Restore Cached build folder
+        with:
+          path: _build
+          key: build-${{ hashFiles('mix.lock') }}
+
       - name: Restore dependencies cache
         uses: actions/cache@v2
         with:

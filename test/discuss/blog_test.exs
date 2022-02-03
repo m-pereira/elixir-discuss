@@ -24,8 +24,11 @@ defmodule Discuss.BlogTest do
       assert %Topic{id: ^topic_id} = Blog.get_topic!(topic_id)
     end
 
-    test "create_topic/1 with valid data creates a topic" do
-      assert {:ok, %Topic{} = _topic} = Blog.create_topic(@valid_attrs)
+    test "create_topic/1 with valid data, creates a topic" do
+      current_user = insert(:user)
+      valid_attrs = Map.merge(@valid_attrs, %{user_id: current_user.id})
+
+      assert {:ok, %Topic{} = _topic} = Blog.create_topic(valid_attrs)
     end
 
     test "create_topic/1 with invalid data returns error changeset" do

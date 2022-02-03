@@ -21,6 +21,8 @@ defmodule DiscussWeb.TopicController do
   end
 
   def create(conn, %{"topic" => topic_params}) do
+    topic_params = topic_params |> Map.merge(%{"user_id" => conn.assigns.user.id})
+
     with {:ok, _topic} <- Blog.create_topic(topic_params) do
       conn
       |> put_flash(:info, "Topic created")

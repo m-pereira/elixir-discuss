@@ -5,6 +5,7 @@ defmodule DiscussWeb.TopicController do
   alias Discuss.Blog
 
   plug(DiscussWeb.Plugs.RequireAuth when action in [:new, :create, :edit, :update, :delete])
+  plug :check_topic_owner when action in [:edit, :update, :delete]
 
   action_fallback(DiscussWeb.FallbackController)
 
@@ -51,5 +52,27 @@ defmodule DiscussWeb.TopicController do
       |> put_flash(:info, "Topic was successfully deleted")
       |> redirect(to: Routes.topic_path(conn, :index))
     end
+  end
+
+  # these params are not the same of action params
+  defp check_topic_owner(conn, _params) do
+    %{params: %{"id" => topic_id}} = conn
+    current_user = conn.assigns.user
+
+    with topic <- Blog.get_topic!(topic_id) do
+      case topic.user_id == current_user.id do
+        true -> conn
+        _ -> halt_with_message(conn, "You are not the owner of this topic")
+      end
+    end
+  rescue
+    _e in Ecto.NoResultsError -> halt_with_message(conn, "Topic not found")
+  end
+
+  defp halt_with_message(conn, message) do
+    conn
+    |> put_flash(:error, message)
+    |> redirect(to: Routes.topic_path(conn, :index))
+    |> halt()
   end
 end

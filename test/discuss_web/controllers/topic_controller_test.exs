@@ -35,8 +35,8 @@ defmodule DiscussWeb.TopicControllerTest do
   end
 
   describe "GET /edit" do
-    test "returns http status 200, and renders the edit template", %{conn: conn} do
-      topic = insert(:topic, @create_attrs)
+    test "returns http status 200, and renders the edit template", %{conn: conn, user: user} do
+      topic = insert(:topic, Map.merge(@create_attrs, %{user: user}))
       conn = get(conn, Routes.topic_path(conn, :edit, topic.id))
 
       assert conn.status == 200
@@ -63,8 +63,8 @@ defmodule DiscussWeb.TopicControllerTest do
   end
 
   describe "PUT /update" do
-    setup do
-      topic = insert(:topic, @create_attrs)
+    setup %{user: user} do
+      topic = insert(:topic, Map.merge(@create_attrs, %{user: user}))
 
       {:ok, topic: topic}
     end
@@ -94,16 +94,17 @@ defmodule DiscussWeb.TopicControllerTest do
   end
 
   describe "DELETE /delete" do
-    test "deletes the topic and redirects to index page", %{conn: conn} do
-      topic = insert(:topic, @create_attrs)
+    setup %{user: user} do
+      topic = insert(:topic, Map.merge(@create_attrs, %{user: user}))
+
+      {:ok, topic: topic}
+    end
+
+    test "deletes the topic and redirects to index page", %{conn: conn, topic: topic} do
       conn = delete(conn, Routes.topic_path(conn, :delete, topic.id))
 
       assert redirected_to(conn) == Routes.topic_path(conn, :index)
-
-      conn = get(conn, Routes.topic_path(conn, :index))
-
-      assert conn.private.phoenix_flash["info"] == "Topic was successfully deleted"
-
+      assert get_flash(conn, :info) == "Topic was successfully deleted"
       assert where(Discuss.Blog.Topic, [t], t.id == ^topic.id) |> Discuss.Repo.all() == []
     end
   end

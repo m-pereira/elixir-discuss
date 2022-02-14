@@ -4,24 +4,29 @@
   <%= for topic <- @topics do %>
     <li class="collection-item">
       <%= topic.title %>
-      <div class="right">
-        <%= link to: Routes.topic_path(@conn, :edit, topic.id), class: "list-links" do %>
-          <i class="md-10 material-icons">edit_note</i>
-        <% end %>
-        <%= link to: Routes.topic_path(@conn, :delete, topic.id),
-                 method: :delete,
-                 data: [confirm: "Deleting, Are you sure?"],
-                 class: "list-links" do %>
-          <i class="md-10 material-icons">delete_forever</i>
-        <% end %>
-      </div>
+
+      <%= if @conn.assigns.user && @conn.assigns.user.id == topic.user_id do %>
+        <div class="right">
+          <%= link to: Routes.topic_path(@conn, :edit, topic.id), class: "list-links" do %>
+            <i class="md-10 material-icons">edit_note</i>
+          <% end %>
+          <%= link to: Routes.topic_path(@conn, :delete, topic.id),
+                   method: :delete,
+                   data: [confirm: "Deleting, Are you sure?"],
+                   class: "list-links" do %>
+            <i class="md-10 material-icons">delete_forever</i>
+          <% end %>
+        </div>
+      <% end %>
     </li>
   <% end %>
 </ul>
 
 <div class="fixed-action-btn">
-  <%= link to: Routes.topic_path(@conn, :new),
-           class: "btn-floating btn-large red waves-effect waves-light" do %>
-    <i class="large material-icons">add</i>
+  <%= if @conn.assigns.user do %>
+    <%= link to: Routes.topic_path(@conn, :new),
+             class: "btn-floating btn-large red waves-effect waves-light" do %>
+      <i class="large material-icons">add</i>
+    <% end %>
   <% end %>
 </div>

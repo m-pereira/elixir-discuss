@@ -9,6 +9,14 @@ defmodule Discuss.BlogFactory do
           user: build(:user)
         }
       end
+
+      def comment_factory do
+        %Discuss.Blog.Comment{
+          content: sequence(:content, &"This is a comment number: #{&1}"),
+          user: build(:user),
+          topic: build(:topic)
+        }
+      end
     end
   end
 end

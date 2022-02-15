@@ -44,6 +44,16 @@ defmodule DiscussWeb.TopicControllerTest do
     end
   end
 
+  describe "GET /show" do
+    test "returns http status 200, and renders the show template", %{conn: conn} do
+      topic = insert(:topic, @create_attrs)
+      conn = get(conn, Routes.topic_path(conn, :show, topic.id))
+
+      assert conn.status == 200
+      assert conn.resp_body =~ topic.title
+    end
+  end
+
   describe "POST /create" do
     test "does not create a new topic and renders the new form, when failure", %{conn: conn} do
       conn = post(conn, Routes.topic_path(conn, :create), %{"topic" => @invalid_attrs})

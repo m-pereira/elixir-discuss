@@ -4,6 +4,8 @@ defmodule DiscussWeb.CommentsChannel do
   alias Discuss.{Blog, Repo, EctoHelper}
 
   @impl true
+  @spec join(String.t(), %{String.t() => integer()}, Phoenix.Socket.t()) ::
+          {:ok, %{comments: any}, Phoenix.Socket.t()}
   def join("comments:" <> topic_id, %{"userId" => user_id}, socket) do
     topic_id = String.to_integer(topic_id)
     topic = Blog.get_topic!(topic_id) |> Repo.preload(comments: :user)
@@ -12,9 +14,10 @@ defmodule DiscussWeb.CommentsChannel do
     {:ok, %{comments: topic.comments}, socket}
   end
 
-  # Channels can be used in a request/response fashion
-  # by sending replies to requests from the client
   @impl true
+  @spec handle_in(String.t(), %{String.t() => String.t()}, Phoenix.Socket.t()) ::
+          {:reply, :ok, Phoenix.Socket.t()}
+          | {:reply, {:error, %{errors: [String.t()]}}, Phoenix.Socket.t()}
   def handle_in("comment:add", %{"content" => content}, socket) do
     topic = socket.assigns.topic
     user_id = socket.assigns.user_id
@@ -25,7 +28,11 @@ defmodule DiscussWeb.CommentsChannel do
       |> Blog.Comment.changeset(%{content: content})
 
     case Repo.insert(changeset) do
-      {:ok, _comment} ->
+      {:ok, comment} ->
+        broadcast!(socket, "comments:#{socket.assigns.topic.id}:new", %{
+          comment: Repo.preload(comment, :user)
+        })
+
         {:reply, :ok, socket}
 
       {:error, _error} ->
@@ -34,10 +41,14 @@ defmodule DiscussWeb.CommentsChannel do
   end
 
   @impl true
-  def handle_in("delete_comment", %{"commentId" => comment_id}, socket) do
+  def handle_in("comment:destroy", %{"commentId" => comment_id}, socket) do
     with comment <- Blog.get_comment!(comment_id) do
       case Blog.delete_comment(comment) do
-        {:ok, _comment} ->
+        {:ok, comment} ->
+          broadcast!(socket, "comments:#{socket.assigns.topic.id}:destroy", %{
+            comment: Repo.preload(comment, :user)
+          })
+
           {:reply, :ok, socket}
 
         {:error, changeset} ->

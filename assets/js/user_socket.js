@@ -57,9 +57,8 @@ socket.connect();
 // Let's assume you have a channel with a topic named `room` and the
 // subtopic is its id - in this case 42:
 
-const renderComments = (comments, userId) => {
-  const renderedComments = comments.map((comment) => {
-    return `
+const commentTemplate = (comment, userId) => {
+  return `
       <li class="collection-item" id="comment-${comment.id}">
         <strong>
           ${comment.user.email.split("@")[0]}
@@ -73,7 +72,12 @@ const renderComments = (comments, userId) => {
         }
       </li>
     `;
-  });
+};
+
+const renderComments = (comments, userId) => {
+  const renderedComments = comments.map((comment) =>
+    commentTemplate(comment, userId)
+  );
 
   document.querySelector(".collection").innerHTML = renderedComments.join("");
 };
@@ -84,9 +88,24 @@ const applyDestroyButtons = (channel) => {
       e.preventDefault();
       const commentId = e.target.parentElement.parentElement.id.split("-")[1];
 
-      channel.push("delete_comment", { commentId: commentId });
+      channel.push("comment:destroy", { commentId: commentId });
     });
   });
+};
+
+const renderComment = (data, userId, channel) => {
+  const { comment } = data;
+  const renderedComment = commentTemplate(comment, userId);
+
+  document.querySelector(".collection").innerHTML += renderedComment;
+  applyDestroyButtons(channel);
+};
+
+const removeComment = (data) => {
+  const { id } = data.comment;
+  const comment = document.querySelector(`#comment-${id}`);
+
+  comment.parentElement.removeChild(comment);
 };
 
 const createSocket = (topicId, userId) => {
@@ -102,10 +121,15 @@ const createSocket = (topicId, userId) => {
       console.log("Unable to join", resp);
     });
 
-  document.querySelector("button").addEventListener("click", function () {
-    const content = document.querySelector("textarea").value;
+  channel.on(`comments:${topicId}:new`, (data) =>
+    renderComment(data, userId, channel)
+  );
+  channel.on(`comments:${topicId}:destroy`, (data) => removeComment(data));
 
-    channel.push("comment:add", { content: content });
+  document.querySelector("button").addEventListener("click", function () {
+    const textarea = document.querySelector("textarea");
+    channel.push("comment:add", { content: textarea.value });
+    textarea.value = "";
   });
 };
 

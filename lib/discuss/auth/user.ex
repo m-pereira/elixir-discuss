@@ -10,6 +10,8 @@ defmodule Discuss.Auth.User do
 
   @required_fields [:email, :provider, :token]
 
+  @derive {Jason.Encoder, only: [:email]}
+
   schema "users" do
     field :email, :string
     field :provider, Ecto.Enum, values: [:github]

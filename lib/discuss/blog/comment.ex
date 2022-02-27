@@ -4,6 +4,8 @@ defmodule Discuss.Blog.Comment do
 
   @required_fields [:content, :user_id, :topic_id]
 
+  @derive {Jason.Encoder, only: [:content, :user, :topic_id]}
+
   schema "comments" do
     field :content, :string
 

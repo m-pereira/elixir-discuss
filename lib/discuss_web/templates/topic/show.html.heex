@@ -11,5 +11,7 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     window.createSocket(<%= @topic.id %>, <%= @user.id %>);
+
+    console.log(document.querySelector(".list-link__destroy"));
   });
 </script>

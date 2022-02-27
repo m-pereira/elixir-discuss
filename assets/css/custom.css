@@ -1,0 +1,8 @@
+.list-link {
+  cursor: pointer;
+}
+
+.list-link__destroy:hover,
+.list-link__destroy:focus {
+  color: gray;
+}

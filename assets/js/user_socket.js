@@ -57,18 +57,36 @@ socket.connect();
 // Let's assume you have a channel with a topic named `room` and the
 // subtopic is its id - in this case 42:
 
-const renderComments = (comments) => {
+const renderComments = (comments, userId) => {
   const renderedComments = comments.map((comment) => {
     return `
-      <li class="collection-item">
+      <li class="collection-item" id="comment-${comment.id}">
         <strong>
           ${comment.user.email.split("@")[0]}
         </strong> says: ${comment.content}
+        ${
+          (Boolean(comment.user.id === userId) &&
+            `<span class="list-link list-link__destroy" style="float: right;">
+              <i class="md-10 material-icons">delete_forever</i>
+            </span>`) ||
+          ""
+        }
       </li>
     `;
   });
 
   document.querySelector(".collection").innerHTML = renderedComments.join("");
+};
+
+const applyDestroyButtons = (channel) => {
+  document.querySelectorAll(".list-link__destroy").forEach((span) => {
+    span.addEventListener("click", (e) => {
+      e.preventDefault();
+      const commentId = e.target.parentElement.parentElement.id.split("-")[1];
+
+      channel.push("delete_comment", { commentId: commentId });
+    });
+  });
 };
 
 const createSocket = (topicId, userId) => {
@@ -77,7 +95,8 @@ const createSocket = (topicId, userId) => {
   channel
     .join()
     .receive("ok", (resp) => {
-      renderComments(resp.comments);
+      renderComments(resp.comments, userId);
+      applyDestroyButtons(channel);
     })
     .receive("error", (resp) => {
       console.log("Unable to join", resp);

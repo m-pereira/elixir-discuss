@@ -9,12 +9,8 @@ defmodule DiscussWeb.CommentsChannelTest do
 
     {:ok, _payload, socket} =
       DiscussWeb.UserSocket
-      |> socket()
-      |> subscribe_and_join(
-        DiscussWeb.CommentsChannel,
-        "comments:#{topic.id}",
-        %{"userId" => user.id}
-      )
+      |> socket("comments", %{user_id: user.id})
+      |> subscribe_and_join(DiscussWeb.CommentsChannel, "comments:#{topic.id}")
 
     %{socket: socket, topic: topic}
   end

@@ -60,16 +60,17 @@ socket.connect();
 const commentTemplate = (comment, userId) => {
   return `
       <li class="collection-item" id="comment-${comment.id}">
-        <strong>
+        ${comment.content}
+        <div class="secondary-content">
           ${comment.user.email.split("@")[0]}
-        </strong> says: ${comment.content}
-        ${
-          (Boolean(comment.user.id === userId) &&
-            `<span class="list-link list-link__destroy" style="float: right;">
-              <i class="md-10 material-icons">delete_forever</i>
+          ${
+            (Boolean(comment.user.id === userId) &&
+              `<span class="list-link list-link__destroy" style="float: right;">
+            <i class="md-10 material-icons">delete_forever</i>
             </span>`) ||
-          ""
-        }
+            ""
+          }
+        </div>
       </li>
     `;
 };
@@ -86,7 +87,8 @@ const applyDestroyButtons = (channel) => {
   document.querySelectorAll(".list-link__destroy").forEach((span) => {
     span.addEventListener("click", (e) => {
       e.preventDefault();
-      const commentId = e.target.parentElement.parentElement.id.split("-")[1];
+      const commentId =
+        e.target.parentElement.parentElement.parentElement.id.split("-")[1];
 
       channel.push("comment:destroy", { commentId: commentId });
     });
@@ -109,7 +111,7 @@ const removeComment = (data) => {
 };
 
 const createSocket = (topicId, userId) => {
-  let channel = socket.channel(`comments:${topicId}`, { userId: userId });
+  let channel = socket.channel(`comments:${topicId}`, {});
 
   channel
     .join()

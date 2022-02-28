@@ -4,12 +4,12 @@ defmodule DiscussWeb.CommentsChannel do
   alias Discuss.{Blog, Repo, EctoHelper}
 
   @impl true
-  @spec join(String.t(), %{String.t() => integer()}, Phoenix.Socket.t()) ::
+  @spec join(String.t(), any, Phoenix.Socket.t()) ::
           {:ok, %{comments: any}, Phoenix.Socket.t()}
-  def join("comments:" <> topic_id, %{"userId" => user_id}, socket) do
+  def join("comments:" <> topic_id, _params, socket) do
     topic_id = String.to_integer(topic_id)
     topic = Blog.get_topic!(topic_id) |> Repo.preload(comments: :user)
-    socket = socket |> assign(:topic, topic) |> assign(:user_id, user_id)
+    socket = socket |> assign(:topic, topic)
 
     {:ok, %{comments: topic.comments}, socket}
   end
@@ -35,7 +35,7 @@ defmodule DiscussWeb.CommentsChannel do
 
         {:reply, :ok, socket}
 
-      {:error, _error} ->
+      {:error, _changeset} ->
         {:reply, {:error, %{errors: EctoHelper.pretty_errors(changeset.errors)}}, socket}
     end
   end
